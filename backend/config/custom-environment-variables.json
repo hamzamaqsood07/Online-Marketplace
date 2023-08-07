@@ -1,0 +1,4 @@
+{
+    "jwtPrivateKey": "OM_jwtPrivateKey",
+    "dbPassword": "OM_dbPassword"
+}
