@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const user = require("../routes/user");
+const auth = require('../routes/auth')
 
 /**
  * The method uses server application to
@@ -13,4 +14,5 @@ module.exports = function (app) {
   app.use(express.json());
   
   app.use("/api/users", user);
+  app.use("/api/auth", auth);
 };

@@ -16,9 +16,12 @@ const upload = multer({storage: storage})
 
 //dealing with post requests
 router.post('/' , upload.single("profilePicture"), async (req, res) => {
+    //checking for profile pic file
     if(!req.file) return res.status(400).send("Profile pic is missing!");
+
+    //creating user object
     let user = _.merge(req.body, {profilePicture:req.file.filename});
-    console.log(user);
+    
     //joi validation
     const { error } = validateUser(user); 
     if (error) return res.status(400).send(error.details[0].message);
@@ -28,10 +31,6 @@ router.post('/' , upload.single("profilePicture"), async (req, res) => {
     if (identicalUserInDB) {
         return res.status(400).send({ Message: "Email already exist" });
     }
-
-    //creating user object
-    // user = _.pick(req.body, ['firstName', 'lastName', 'email', 'password','userType']); 
-    // user.profilePic=req.file.filename;
     
     //hashing password
     const salt = await bcrypt.genSalt(10);
@@ -40,7 +39,7 @@ router.post('/' , upload.single("profilePicture"), async (req, res) => {
     // saving in db
     try{
         user = await User.create(user)
-        res.status(200).send(user)
+        res.status(200).send(_.omit(user.dataValues,["password"]))
     } 
     catch (error) {
         res.status(500).send(error.message)

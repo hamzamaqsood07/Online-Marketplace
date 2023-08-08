@@ -1,6 +1,9 @@
 const { Sequelize } = require('sequelize');
 const {db} = require('../startup/db');
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+const _ = require('lodash');
+const config = require('config');
 
 const users = db.define('users', {
     firstName: {
@@ -22,6 +25,10 @@ const users = db.define('users', {
         type: Sequelize.STRING
     }
 });
+const generateAuthToken = function(){
+    const token = jwt.sign(_.pick(this,['id','firstName','lastName','email','userType','profilePicture']), config.get('jwtPrivateKey'));
+    return token;
+}
 const validateUser =function(user){
     const schema = Joi.object({
         firstName: Joi.string().max(15).required(),
@@ -35,3 +42,4 @@ const validateUser =function(user){
 }
 module.exports.User = users;
 module.exports.validateUser = validateUser;
+module.exports.generateAuthToken = generateAuthToken;
