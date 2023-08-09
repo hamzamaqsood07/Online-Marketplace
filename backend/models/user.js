@@ -7,6 +7,11 @@ const config = require('config');
 
 //defining schema
 const users = db.define('users', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     firstName: {
         type: Sequelize.STRING
     },
@@ -24,17 +29,27 @@ const users = db.define('users', {
     },
     profilePicture: {
         type: Sequelize.STRING
+    },
+    createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('NOW()')
+    },
+    updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('NOW()')
     }
 });
 //synchronizing table
 (async () => {
     await db.sync(); 
-    console.log('Table synchronized');
+    console.log('users table synchronized');
   })();
 
 //generating token
-const generateAuthToken = function(){
-    const token = jwt.sign(_.pick(this,['id','firstName','lastName','email','userType','profilePicture']), config.get('jwtPrivateKey'));
+const generateAuthToken = function(user){
+    const token = jwt.sign(_.pick(user,['id','firstName','lastName','email','userType','profilePicture']), config.get('jwtPrivateKey'));
     return token;
 }
 

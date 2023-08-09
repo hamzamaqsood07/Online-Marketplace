@@ -9,7 +9,8 @@ const storage = multer.diskStorage({
         cb(null, './images/profile-pics')
     },
     filename: (req, file, cb) => {
-        cb(null, `${req.body.email}.jpg`)
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `${uniqueSuffix}.jpg`)
     }
 })
 const upload = multer({storage: storage})
@@ -18,7 +19,6 @@ const upload = multer({storage: storage})
 router.post('/' , upload.single("profilePicture"), async (req, res) => {
     //checking for profile pic file
     if(!req.file) return res.status(400).send("Profile pic is missing!");
-
     //creating user object
     let user = _.merge(req.body, {profilePicture:req.file.filename});
     

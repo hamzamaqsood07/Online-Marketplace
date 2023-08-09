@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="login" element={<Login/>} />
+        <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="*" element={<NotFound />} /> {/* This should be the last route */}
         {/* You can add more routes here if needed */}
