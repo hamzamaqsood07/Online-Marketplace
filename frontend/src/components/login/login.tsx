@@ -17,9 +17,17 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 import '../../styles/error.css';
+import { useSelector , useDispatch } from 'react-redux';
+import { setAuthenticationStatus } from '../../redux/slices/auth-slice.ts';
+import { RootState } from '../../redux/store.ts';
+import { useEffect } from 'react';
+
 
 
 function SignInSide() {
+  let authenticationStatus = useSelector((state: RootState) => state.auth.authenticationStatus);
+  const dispatch = useDispatch();
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
@@ -27,17 +35,24 @@ function SignInSide() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      console.log("login status1:",authenticationStatus);
       const url = 'http://localhost:5000/api/auth';
       const response = await axios.post(url, {
         email: values.email,
         password: values.password,
       });
+      dispatch(setAuthenticationStatus(true));
       console.log('Login successful', response.data);
     } catch (error) {
       console.log('Login failed', error);
     }
     setSubmitting(false);
   };
+
+  useEffect(() => {
+    console.log('Updated authenticationStatus:', authenticationStatus);
+  }, [authenticationStatus]);
+
 
   return (
     <ThemeProvider theme={createTheme()}>

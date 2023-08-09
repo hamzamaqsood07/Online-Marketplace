@@ -30,7 +30,7 @@ const validationSchema = Yup.object().shape({
     .min(8, 'Password must be at least 8 characters long')
     .required('Password is required'),
   userType: Yup.string().required('User type is required'),
-  // profilePicture: Yup.mixed().required('Profile picture is required'),
+  profilePicture: Yup.mixed().required('Profile picture is required'),
 });
 
 export default function SignUp() {
@@ -49,7 +49,7 @@ export default function SignUp() {
       const url = 'http://localhost:5000/api/users';
       const response = await axios.post(url, values, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Set the correct content type for FormData
+          'Content-Type': 'multipart/form-data', 
         }});
       console.log('Signup successful', response.data);
     } catch (error) {
