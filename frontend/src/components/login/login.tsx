@@ -18,15 +18,18 @@ import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 import '../../styles/error.css';
 import { useSelector , useDispatch } from 'react-redux';
-import { setAuthenticationStatus } from '../../redux/slices/auth-slice.ts';
+import { setAuthToken } from '../../redux/slices/auth-slice.ts';
 import { RootState } from '../../redux/store.ts';
 import { useEffect } from 'react';
+import jwt_decode from 'jwt-decode'; // Import jwt-decode library
+import { useNavigate } from 'react-router-dom';
 
 
 
 function SignInSide() {
-  let authenticationStatus = useSelector((state: RootState) => state.auth.authenticationStatus);
+  const authenticationStatus = useSelector((state: RootState) => state.auth.authenticationStatus);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -35,16 +38,32 @@ function SignInSide() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      console.log("login status1:",authenticationStatus);
       const url = 'http://localhost:5000/api/auth';
       const response = await axios.post(url, {
         email: values.email,
         password: values.password,
       });
-      dispatch(setAuthenticationStatus(true));
+      const token = response.data.token;
+
+      // Decode the JWT token
+      const decodedToken: any = jwt_decode(token);
+
+      // Access the userType claim
+      const userType: string = decodedToken.userType;
+      dispatch(setAuthToken(response.data.token));
       console.log('Login successful', response.data);
+      // Navigate based on userType
+      if (userType === 'buyer') {
+        // Navigate to buyer route
+        navigate('/buyer-dashboard');
+      } else if (userType === 'seller') {
+        // Navigate to seller route
+        navigate('/seller-dashboard');
+      }
+
     } catch (error) {
       console.log('Login failed', error);
+      alert(console.error);
     }
     setSubmitting(false);
   };

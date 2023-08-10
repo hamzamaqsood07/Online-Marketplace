@@ -10,7 +10,7 @@ const seller = require('../middlewares/seller');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './images/products')
+        cb(null, '../frontend/public/images/products')
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -21,11 +21,13 @@ const upload = multer({storage: storage})
 
 //Adding an item
 router.post('/', [auth, seller] , upload.array("pictures"), async (req, res) => {
+    console.log(req.files);
 
     //creating user object
-    let product = _.merge(req.body, { 
-        pictures: req.files.map(file => file.filename)
-     });
+    let product = (req.files && req.files.length>0) ? 
+        _.merge(req.body, {  pictures: req.files.map(file => file.filename)
+     }) : req.body
+     ;
     
     //joi validation
     const { error } = validateProduct(product); 
@@ -51,7 +53,10 @@ router.get('/me', [auth, seller], async (req, res) => {
         const products = await Product.findAll({
             where: {
                 sellerId: req.user.id
-            }
+            },
+            order: [
+                ['id', 'DESC']
+            ]
         });
         
         res.status(200).send(products);
@@ -80,9 +85,11 @@ router.delete('/:productId', [auth, seller], async (req, res) => {
         }
 
         // Delete the associated pictures from the file system
-        for (const filename of product.dataValues.pictures) {
-            const imagePath = path.join(__dirname, '..', 'images', 'products', filename);
-            fs.unlinkSync(imagePath);
+        if(product.dataValues.pictures && product.dataValues.pictures.length>0){
+            for (const filename of product.dataValues.pictures) {
+                const imagePath = path.join(__dirname, '..', '..', 'frontend','public', 'images', 'products', filename);
+                fs.unlinkSync(imagePath);
+            }
         }
 
         // Delete the product
@@ -120,7 +127,7 @@ router.put('/:productId', [auth, seller], upload.array("pictures"), async (req, 
         // Delete the previous pictures from the file system if new photos are uploaded
         if (req.files && req.files.length > 0) {
             for (const filename of product.dataValues.pictures) {
-                const imagePath = path.join(__dirname, '..', 'images', 'products', filename);
+                const imagePath = path.join(__dirname, '..', '..', 'frontend','public', 'images', 'products', filename);
                 fs.unlinkSync(imagePath);
             }
         }

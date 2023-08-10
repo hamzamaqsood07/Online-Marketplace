@@ -19,6 +19,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../../styles/error.css';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
@@ -34,6 +35,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -52,6 +54,8 @@ export default function SignUp() {
           'Content-Type': 'multipart/form-data', 
         }});
       console.log('Signup successful', response.data);
+      alert("Signup successful");
+      navigate('/login');
     } catch (error) {
       console.log(error);
     }

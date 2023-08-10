@@ -6,7 +6,7 @@ const { User, validateUser } = require('../models/user');
 const router = express.Router();
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './images/profile-pics')
+        cb(null, '../frontend/public/images/profile-pics')
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
