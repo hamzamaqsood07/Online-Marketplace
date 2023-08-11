@@ -23,6 +23,7 @@ import { RootState } from '../../redux/store.ts';
 import { useEffect } from 'react';
 import jwt_decode from 'jwt-decode'; // Import jwt-decode library
 import { useNavigate } from 'react-router-dom';
+import { setProfile } from '../../redux/slices/profile-slice.ts';
 
 
 
@@ -47,10 +48,12 @@ function SignInSide() {
 
       // Decode the JWT token
       const decodedToken: any = jwt_decode(token);
+      dispatch(setAuthToken(response.data.token));
+      dispatch(setProfile(decodedToken));
+      console.log("decodedToken:",decodedToken);
 
       // Access the userType claim
       const userType: string = decodedToken.userType;
-      dispatch(setAuthToken(response.data.token));
       console.log('Login successful', response.data);
       // Navigate based on userType
       if (userType === 'buyer') {

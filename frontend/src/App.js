@@ -7,7 +7,6 @@ import SellerDashboard from './components/Seller/Dashboard/Dashboard.js'
 import BuyerDashboard from './components/Buyer/Dashboard/Dashboard.js'
 import jwt_decode from 'jwt-decode';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
 
 function App() {
   const token = useSelector((state) => state.auth.token);
@@ -16,6 +15,7 @@ function App() {
 
   if (token) {
     const decodedToken = jwt_decode(token);
+    console.log(decodedToken);
     const userType = decodedToken.userType;
 
     if (userType === 'buyer') {
@@ -30,7 +30,7 @@ function App() {
         <Route path="/" element={<InitialRoute/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
-        <Route path="/seller-dashboard" element={<SellerDashboard/>}/>
+        <Route path="/seller-dashboard" element={<InitialRoute/>}/>
         <Route path="/buyer-dashboard" element={<InitialRoute/>}/>
         <Route path="*" element={<NotFound />} /> {/* This should be the last route */}
         {/* You can add more routes here if needed */}

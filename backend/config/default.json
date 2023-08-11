@@ -1,4 +1,4 @@
 {
-    "jwtPrivateKey": "",
-    "dbPassword": ""
+    "jwtPrivateKey": "private",
+    "dbPassword": "25july2000"
 }

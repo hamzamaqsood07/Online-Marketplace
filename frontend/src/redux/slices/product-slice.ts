@@ -25,10 +25,13 @@ const productsSlice = createSlice({
         fetchProducts: (state, action: PayloadAction<Product[]>) => {
             state.products = action.payload;
         },
+        clearProducts: state => {
+            state.products = [];
+        }
     },
 });
 
-export const { fetchProducts } = productsSlice.actions;
+export const { fetchProducts, clearProducts } = productsSlice.actions;
 
 export const selectProducts = (state: RootState) => state.products.products;
 

@@ -1,28 +1,33 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Button from "@mui/material/Button";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import AddItem from './AddItem';
-import EditItem from './EditItem';
-import img1 from './images/img1.jpg'
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import img2 from './images/img2.jpg'
 import { IconButton } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts, clearProducts } from '../../../redux/slices/product-slice.ts';
+import Cart from '../Cart/cart.tsx';
+import { incrementToCart, clearCart } from "../../../redux/slices/cart-slice.ts";
+import { clearProfile } from '../../../redux/slices/profile-slice.ts';
+import { clearAuthToken } from '../../../redux/slices/auth-slice.ts';
+import { useNavigate } from 'react-router-dom';
+import ProfilePage from '../../Profile/Profile.tsx';
+
+const baseImageUrl = 'images/products/';
+
 const columns = [
-    { id: 'title', label: 'title', minWidth: 170 },
-    { id: 'image', label: 'Picture', minWidth: 100 },
-    { id: 'desc', label: 'Description', minWidth: 100 },
+    { id: 'title', label: 'Title', minWidth: 170 },
+    { id: 'pictures', label: 'Picture', minWidth: 100 },
+    { id: 'description', label: 'Description', minWidth: 100 },
     {
         id: 'price',
         label: 'Price',
@@ -35,74 +40,70 @@ const columns = [
         minWidth: 100,
         format: (value) => value.toLocaleString('en-US'),
     },
-
-
-];
-
-function createData(title, image, desc, price, quantity) {
-
-    return { title, image, desc, price, quantity };
-
-}
-
-const rows = [
-    createData('Product 1', [img1, img2, img1, img2, img1, img1, img1], 'This is an iphone', 300000, 5),
-    createData('Product 2', [img1, img2], 'This is an iphone', 300000, 5),
-    createData('Product 3', [img1, img2], 'This is an iphone', 300000, 5),
-    createData('Product 4', [img1, img2], 'This is an iphone', 300000, 5),
-    createData('Product 5', [img1, img2], 'This is an iphone', 300000, 5),
-
-
+    // { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
 
 export default function BuyerDashboard() {
-    
-
     const [open, setOpen] = React.useState(false);
-    const [openEdit, setOpenEdit] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleCloseEdit = () => setOpenEdit(false);
     const handleClose = () => setOpen(false);
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [currRow, setCurrRow] = useState(null)
+    const dispatch = useDispatch();
+    const products = useSelector((state) => state.products.products);
+    const token = useSelector((state) => state.auth.token);
+    const cartCount = useSelector((state) => state.cart.products.length);
+    const navigate = useNavigate();
+
     const style = {
         position: 'absolute',
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 400,
+        width: 700,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    const handleAddToCart = (product) => {
+        // Implement the functionality to add the product to the cart
+        dispatch(incrementToCart(product));
+        console.log(`Adding product '${product.title}' to cart.`);
     };
 
-    const handleEdit = (row) => {
-        setCurrRow(row)
-        setOpenEdit(true);
+    const fetchData = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/products/', {
+                headers: {
+                    'x-auth-token': token // Set the 'x-auth-token' header
+                }
+            });
+            const responseData = await response.json();
+            dispatch(fetchProducts(responseData));
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    },[]);
+
+    const logout = ()=>{
+        dispatch(clearCart());
+        dispatch(clearProducts());
+        dispatch(clearProfile());
+        dispatch(clearAuthToken());
+        navigate('/login');
     }
 
-
-    const handleDelete = (row) => {
-        //Write the APIs for delete here
-        console.log(row)
-
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    // ...
 
     return (
         <>
+            <ProfilePage></ProfilePage>
             <div>
-                {/* Add Product Page */}
+                {/* Cart */}
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -110,31 +111,33 @@ export default function BuyerDashboard() {
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
-                        <AddItem closeEvent={handleClose} />
+                        <Cart />
                     </Box>
                 </Modal>
-
-                {/* Edit Product Page */}
-                <Modal
-                    open={openEdit}
-                    onClose={handleCloseEdit}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={style}>
-                        <EditItem closeEvent={handleCloseEdit} row={currRow} />
-                    </Box>
-                </Modal>
-
             </div>
             <Paper>
-                <Box sx={{ textAlign: "right", marginRight: "100px", marginTop: "10px" }}>
-                    <Button variant="contained" endIcon={<AddCircleIcon />} onClick={handleOpen}>
-                        Add
+                <Box sx={{ textAlign: 'right', marginTop: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<ExitToAppIcon />}
+                        onClick={logout}
+                        sx={{
+                            backgroundColor: '#ff5722',
+                            '&:hover': {
+                                backgroundColor: '#e64a19',
+                            },
+                        }}
+                    >
+                        Logout
                     </Button>
                 </Box>
-
-                <TableContainer sx={{ margin: "10px" }}>
+                <Box sx={{ textAlign: "center", margin: "10px" }}>
+                    <Button variant="contained" endIcon={<ShoppingCartIcon />} onClick={handleOpen}>
+                        Cart({cartCount})
+                    </Button>
+                </Box>
+                <TableContainer sx={{ margin: "10px", overflowX: 'auto' }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
@@ -150,53 +153,57 @@ export default function BuyerDashboard() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {
-                                rows.map((row) =>
-                                (
-                                    <TableRow key={row.title}>
-                                        {
-                                            columns.map((column) => {
-                                                return (
-                                                    <TableCell key={column.id} >
-                                                        {column.id === 'image' && Array.isArray(row[column.id]) ? (
-                                                            <div>
-                                                                {row[column.id].map((imageUrl, index) => (
-                                                                    <img
-                                                                        key={index}
-                                                                        src={imageUrl}
-                                                                        alt={`${row.title} - Image ${index + 1}`}
-                                                                        style={{ maxWidth: '250px', marginRight: '5px' }}
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        ) : column.format ? (
-                                                            column.format(row[column.id])
-                                                        ) : (
-                                                            row[column.id]
-                                                        )}
-                                                    </TableCell>
-                                                )
-                                            })
-                                        }
+                            {products ? (
+                                products.map((product) => (
+                                    <TableRow key={product.id}>
+                                        {columns.map((column) => (
+                                            <TableCell key={column.id}>
+                                                {column.id === 'pictures' && Array.isArray(product[column.id]) ? (
+                                                    <div>
+                                                        {product[column.id].map((pictureUrl, index) => (
+                                                            <img
+                                                                key={index}
+                                                                src={`${baseImageUrl}${pictureUrl}`}
+                                                                style={{ maxWidth: '250px', marginRight: '5px' }}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                ) : column.format ? (
+                                                    column.format(product[column.id])
+                                                ) : (
+                                                    product[column.id]
+                                                )}
+                                            </TableCell>
+                                        ))}
                                         <TableCell align="center">
-
-                                            <IconButton onClick={() => handleEdit(row)}>
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton onClick={() => handleDelete(row)}>
-                                                <DeleteIcon />
+                                            <IconButton
+                                                onClick={() => handleAddToCart(product)}
+                                                style={{
+                                                    border: '1px solid #007bff',
+                                                    borderRadius: '5px',
+                                                    padding: '5px 10px',
+                                                    color: '#007bff',
+                                                    backgroundColor: 'transparent',
+                                                    transition: 'background-color 0.3s, color 0.3s',
+                                                }}
+                                            >
+                                                Add to Cart
                                             </IconButton>
                                         </TableCell>
                                     </TableRow>
                                 ))
-                            }
-
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} align="center">
+                                        Loading...
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
-
-            </Paper >
+            </Paper>
         </>
-
     );
+    
 }

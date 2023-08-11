@@ -7,6 +7,7 @@ const { Product, validateProduct, validateUpdateProduct } = require('../models/p
 const router = express.Router();
 const auth = require('../middlewares/auth');
 const seller = require('../middlewares/seller');
+const buyer = require('../middlewares/buyer');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -157,3 +158,32 @@ router.put('/:productId', [auth, seller], upload.array("pictures"), async (req, 
 
 
 module.exports = router;    
+
+
+
+
+
+
+
+
+
+
+
+
+//..................................Buyer.............................
+
+//Get all products
+router.get('/', [auth, buyer], async (req, res) => {
+    try {
+        const products = await Product.findAll({
+            order: [
+                ['updatedAt', 'DESC']
+            ]
+        });
+        
+        res.status(200).send(products);
+    } 
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+});

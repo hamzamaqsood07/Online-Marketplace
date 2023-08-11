@@ -3,6 +3,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './slices/auth-slice.ts'; // Update with the correct import path
 import productReducer from './slices/product-slice.ts'; // Update with the correct import path
+import cartReducer from './slices/cart-slice.ts';
+import profileReducer from './slices/profile-slice.ts'
 
 // Create a Redux Persist configuration
 const persistConfig = {
@@ -15,10 +17,12 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   products: productReducer,
+  cart: cartReducer,
+  profile: profileReducer
 });
 
 // Define the RootState type
-type RootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof rootReducer>;
 
 // Create a persisted reducer using Redux Persist
 const persistedReducer = persistReducer(persistConfig, rootReducer);

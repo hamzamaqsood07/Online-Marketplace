@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Button from "@mui/material/Button";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -17,8 +18,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import {fetchProducts} from '../../../redux/slices/product-slice.ts'
+import {fetchProducts, clearProducts} from '../../../redux/slices/product-slice.ts'
 import axios from 'axios';
+import ProfilePage from '../../Profile/Profile.tsx';
+import { useNavigate } from 'react-router-dom';
+import { clearProfile } from '../../../redux/slices/profile-slice.ts';
+import { clearAuthToken } from '../../../redux/slices/auth-slice.ts';
 
 
 const baseImageUrl = 'images/products/';
@@ -56,6 +61,9 @@ export default function SellerDashboard() {
     const [currRow, setCurrRow] = useState(null)
     const token = useSelector((state) => state.auth.token);
     const products = useSelector((state)=>state.products.products);
+    const navigate = useNavigate();
+    
+
     
     
     const fetchData = async () => {
@@ -95,6 +103,13 @@ export default function SellerDashboard() {
         setCurrRow(row)
     }
 
+    const logout = ()=>{
+        dispatch(clearProducts());
+        dispatch(clearProfile());
+        dispatch(clearAuthToken());
+        navigate('/login');
+    }
+
 
     const handleDelete = async(row) => {
         //Write the APIs for delete here
@@ -121,6 +136,7 @@ export default function SellerDashboard() {
 
     return (
         <>
+            <ProfilePage></ProfilePage>
             <div>
                 {/* Add Product Page */}
                 <Modal
@@ -148,9 +164,25 @@ export default function SellerDashboard() {
 
             </div>
             <Paper>
-                <Box sx={{ textAlign: "right", marginRight: "100px", marginTop: "10px" }}>
+                <Box sx={{ textAlign: 'right', marginTop: 2 }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ExitToAppIcon />}
+                    onClick={logout}
+                    sx={{
+                    backgroundColor: '#ff5722', // Change this color to your desired logout button color
+                    '&:hover': {
+                        backgroundColor: '#e64a19', // Change this color to your desired hover color
+                    },
+                    }}
+                >
+                    Logout
+                </Button>
+                </Box>
+                <Box sx={{ textAlign: "center",        marginTop: "10px" }}>
                     <Button variant="contained" endIcon={<AddCircleIcon />} onClick={handleOpen}>
-                        Add
+                        Add Product
                     </Button>
                 </Box>
 

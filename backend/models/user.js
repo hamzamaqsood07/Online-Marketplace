@@ -49,7 +49,10 @@ const users = db.define('users', {
 
 //generating token
 const generateAuthToken = function(user){
-    const token = jwt.sign(_.pick(user,['id','firstName','lastName','email','userType','profilePicture']), config.get('jwtPrivateKey'));
+    const token = jwt.sign(
+        _.pick(user,['id','firstName','lastName','email','userType','profilePicture']),      
+        config.get('jwtPrivateKey')
+        );
     return token;
 }
 
