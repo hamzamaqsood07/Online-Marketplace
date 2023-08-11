@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Signup from './components/signup/signup.tsx';
 import Login from './components/login/login.tsx';
 import NotFound from './components/notfound.tsx';
-import SellerDashboard from './components/Seller/Dashboard/Dashboard.js'
-import BuyerDashboard from './components/Buyer/Dashboard/Dashboard.js'
+import SellerDashboard from './components/Seller/Dashboard/Dashboard.tsx'
+import BuyerDashboard from './components/Buyer/Dashboard/Dashboard.tsx'
 import jwt_decode from 'jwt-decode';
 import { useSelector } from 'react-redux';
 

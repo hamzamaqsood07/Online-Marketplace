@@ -10,7 +10,7 @@ import profileReducer from './slices/profile-slice.ts'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'], // List of reducers to persist
+  whitelist: ['auth', 'profile', 'cart'], // List of reducers to persist
 };
 
 // Combine reducers

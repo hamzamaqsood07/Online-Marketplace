@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import {useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,6 +22,15 @@ import { clearAuthToken } from '../../../redux/slices/auth-slice.ts';
 import { useNavigate } from 'react-router-dom';
 import ProfilePage from '../../Profile/Profile.tsx';
 
+interface Product {
+    id: number;
+    title: string;
+    pictures: string[];
+    description: string;
+    price: number;
+    quantity: number;
+    // Add other properties as needed
+}
 const baseImageUrl = 'images/products/';
 
 const columns = [
@@ -44,16 +53,16 @@ const columns = [
 ];
 
 export default function BuyerDashboard() {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const dispatch = useDispatch();
-    const products = useSelector((state) => state.products.products);
-    const token = useSelector((state) => state.auth.token);
-    const cartCount = useSelector((state) => state.cart.products.length);
+    const products = useSelector((state: RootState) => state.products.products);
+    const token = useSelector((state: RootState) => state.auth.token);
+    const cartCount = useSelector((state: RootState) => state.cart.products.length);
     const navigate = useNavigate();
 
-    const style = {
+    const style: React.CSSProperties = {
         position: 'absolute',
         top: '50%',
         left: '50%',
@@ -65,8 +74,8 @@ export default function BuyerDashboard() {
         p: 4,
     };
 
+
     const handleAddToCart = (product) => {
-        // Implement the functionality to add the product to the cart
         dispatch(incrementToCart(product));
         console.log(`Adding product '${product.title}' to cart.`);
     };
@@ -75,10 +84,10 @@ export default function BuyerDashboard() {
         try {
             const response = await fetch('http://localhost:5000/api/products/', {
                 headers: {
-                    'x-auth-token': token // Set the 'x-auth-token' header
+                    'x-auth-token': token 
                 }
             });
-            const responseData = await response.json();
+            const responseData: Product[] = await response.json();
             dispatch(fetchProducts(responseData));
         } catch (error) {
             console.error('Error fetching data:', error);
