@@ -54,13 +54,22 @@ const columns = [
 
 export default function BuyerDashboard() {
     const [open, setOpen] = useState(false);
+    const [cartCount, setCartCount] = useState(0);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const dispatch = useDispatch();
     const products = useSelector((state: RootState) => state.products.products);
     const token = useSelector((state: RootState) => state.auth.token);
-    const cartCount = useSelector((state: RootState) => state.cart.products.length);
+    const cartProducts = useSelector((state: RootState) => state.cart.products);
     const navigate = useNavigate();
+    useEffect(()=>{
+        let count=0;
+        for(let i=0; i<cartProducts.length; i++){
+            count+=cartProducts[i].quantity;
+        }
+        setCartCount(count);
+    },[cartProducts])
+
 
     const style: React.CSSProperties = {
         position: 'absolute',

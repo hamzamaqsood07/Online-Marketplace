@@ -24,6 +24,7 @@ import ProfilePage from '../../Profile/Profile.tsx';
 import { useNavigate } from 'react-router-dom';
 import { clearProfile } from '../../../redux/slices/profile-slice.ts';
 import { clearAuthToken } from '../../../redux/slices/auth-slice.ts';
+import { RootState } from '../../../redux/store.js';
 
 
 const baseImageUrl = 'images/products/';
@@ -59,8 +60,8 @@ export default function SellerDashboard() {
     const handleOpenEdit = () => setOpenEdit(true);
     const handleCloseEdit = () => setOpenEdit(false);
     const [currRow, setCurrRow] = useState(null)
-    const token = useSelector((state) => state.auth.token);
-    const products = useSelector((state)=>state.products.products);
+    const token = useSelector((state: RootState) => state.auth.token);
+    const products = useSelector((state: RootState)=>state.products.products);
     const navigate = useNavigate();
     
 
