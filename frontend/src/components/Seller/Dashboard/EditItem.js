@@ -8,6 +8,16 @@ import CloseIcon from '@mui/icons-material/Close'
 import Button from '@mui/material/Button'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object({
+    title: Yup.string().required('Title is required'),
+    price: Yup.number().min(100, 'Price cannot be less than 100').required('Price is required'),
+    quantity: Yup.number().min(1, 'Quantity must be greater than 0').required('Quantity is required'),
+    description: Yup.string().required('Description is required'),
+    pictures: Yup.array().min(1, 'At least one image is required'),
+});
 
 
 export default function EditItem(props) {

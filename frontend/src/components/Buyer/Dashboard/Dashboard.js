@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import {useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -50,7 +50,13 @@ export default function BuyerDashboard() {
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.products);
     const token = useSelector((state) => state.auth.token);
-    const cartCount = useSelector((state) => state.cart.products.length);
+    const cartCount = useSelector((state) => {
+        let count=0;
+        for(let i=0; i<state.cart.products.length; i++){
+            count+=state.cart.products[i].quantity;
+        }
+        return count;
+    });
     const navigate = useNavigate();
 
     const style = {
