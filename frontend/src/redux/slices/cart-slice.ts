@@ -1,12 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store'; // Adjust the path
-
-export interface Product {
-    id: number;
-    title: string;
-    price: number;
-    quantity: number;
-}
+import {Product} from './product-slice'
 
 interface CartState {
     products: Product[];

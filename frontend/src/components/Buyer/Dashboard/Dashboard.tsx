@@ -14,13 +14,15 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts, clearProducts } from '../../../redux/slices/product-slice.ts';
-import Cart from '../Cart/cart.tsx';
-import { incrementToCart, clearCart } from "../../../redux/slices/cart-slice.ts";
-import { clearProfile } from '../../../redux/slices/profile-slice.ts';
-import { clearAuthToken } from '../../../redux/slices/auth-slice.ts';
+import { fetchProducts, clearProducts, Product } from '../../../redux/slices/product-slice';
+import Cart from '../Cart/cart';
+import { incrementToCart, clearCart } from "../../../redux/slices/cart-slice";
+import { clearProfile } from '../../../redux/slices/profile-slice';
+import { clearAuthToken } from '../../../redux/slices/auth-slice';
 import { useNavigate } from 'react-router-dom';
-import ProfilePage from '../../Profile/Profile.tsx';
+import ProfilePage from '../../Profile/Profile';
+import { RootState } from '../../../redux/store';
+import axios from 'axios';
 
 const baseImageUrl = 'images/products/';
 
@@ -32,13 +34,13 @@ const columns = [
         id: 'price',
         label: 'Price',
         minWidth: 100,
-        format: (value) => value.toLocaleString('en-US'),
+        format: (value: number) => value.toLocaleString('en-US'),
     },
     {
         id: 'quantity',
         label: 'Quantity',
         minWidth: 100,
-        format: (value) => value.toLocaleString('en-US'),
+        format: (value: number) => value.toLocaleString('en-US'),
     },
     // { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
@@ -48,9 +50,9 @@ export default function BuyerDashboard() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const dispatch = useDispatch();
-    const products = useSelector((state) => state.products.products);
-    const token = useSelector((state) => state.auth.token);
-    const cartCount = useSelector((state) => {
+    const products = useSelector((state: RootState) => state.products.products);
+    const token = useSelector((state: RootState) => state.auth.token);
+    const cartCount = useSelector((state: RootState) => {
         let count=0;
         for(let i=0; i<state.cart.products.length; i++){
             count+=state.cart.products[i].quantity;
@@ -71,19 +73,19 @@ export default function BuyerDashboard() {
         p: 4,
     };
 
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (product: Product) => {
         // Implement the functionality to add the product to the cart
         dispatch(incrementToCart(product));
     };
 
     const fetchData = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/products/', {
+            const response = await axios.get('http://localhost:5000/api/products/', {
                 headers: {
-                    'x-auth-token': token // Set the 'x-auth-token' header
-                }
+                    'x-auth-token': token,
+                },
             });
-            const responseData = await response.json();
+            const responseData = response.data;
             dispatch(fetchProducts(responseData));
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -119,8 +121,10 @@ export default function BuyerDashboard() {
                         <Cart />
                     </Box>
                 </Modal>
+
             </div>
             <Paper>
+                {/* Logout */}
                 <Box sx={{ textAlign: 'right', marginTop: 2 }}>
                     <Button
                         variant="contained"
@@ -137,6 +141,8 @@ export default function BuyerDashboard() {
                         Logout
                     </Button>
                 </Box>
+
+                {/* Cart Button */}
                 <Box sx={{ textAlign: "center", margin: "10px" }}>
                     <Button variant="contained" endIcon={<ShoppingCartIcon />} onClick={handleOpen}>
                         Cart({cartCount})
@@ -149,7 +155,6 @@ export default function BuyerDashboard() {
                                 {columns.map((column) => (
                                     <TableCell
                                         key={column.id}
-                                        align={column.align}
                                         style={{ minWidth: column.minWidth }}
                                     >
                                         {column.label}

@@ -5,24 +5,31 @@ const app = express();
 const router = express.Router();
 app.use(express.static('public'));
 
-const YOUR_DOMAIN = 'http://localhost:5000';
+const YOUR_DOMAIN = 'http://localhost:3000/';
 
 router.post('/create-checkout-session', async (req, res) => {
-    const price = req.body.totalPrice;
+    const products = req.body.products;
+    const itemsObj = products.map((product)=>{
+        return {
+            quantity: product.quantity,
+            price_data: {
+                currency: 'pkr',
+                unit_amount: product.price*100, //price is received in paisas
+                product_data:{
+                    name: product.title,
+                    description: product.description
+                }
+            }
+        }
+    }) 
     const session = await stripe.checkout.sessions.create({
-        line_items: [
-        {
-        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: `{{pr_1234}}`,
-        quantity: 1,
-        },
-        ],
+        line_items: itemsObj,
         mode: 'payment',
-        success_url: `${YOUR_DOMAIN}?success=true`,
-        cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+        success_url: `${YOUR_DOMAIN}buyer-dashboard`,
+        cancel_url: `${YOUR_DOMAIN}buyer-dashboard`,
     });
 
-    res.redirect(303, session.url);
+    res.send({url: session.url});
 });
 
 module.exports = router;

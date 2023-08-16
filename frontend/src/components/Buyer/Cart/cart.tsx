@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { removeFromCart, incrementToCart, decrementFromCart, Product } from '../../../redux/slices/cart-slice';
+import { removeFromCart, incrementToCart, decrementFromCart } from '../../../redux/slices/cart-slice';
+import { Product } from '../../../redux/slices/product-slice';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,7 +13,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import { setTotalPrice } from '../../../redux/slices/totalPrice-slice';
 import axios from 'axios';
 
 const CartPage: React.FC = () => {
@@ -39,10 +39,16 @@ const CartPage: React.FC = () => {
     };
 
     const checkout = () => {
-        const totalPrice = calculateTotalPrice();
-        dispatch(setTotalPrice(totalPrice));
-        axios.post("http://localhost:5000/api/payment/create-checkout-session",{totalPrice:totalPrice})
-        // navigate('/payment');
+        console.log(cart.products);
+        axios.post("http://localhost:5000/api/payment/create-checkout-session",
+            {products:cart.products}).
+            then((response) => {
+                console.log("asasasasasasa",response.data.url);
+                if(response.data.url){    
+                    window.location.href=response.data.url;
+                }
+            }
+        );
     }
 
     return (

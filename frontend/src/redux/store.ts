@@ -5,13 +5,12 @@ import authReducer from './slices/auth-slice'; // Update with the correct import
 import productReducer from './slices/product-slice'; // Update with the correct import path
 import cartReducer from './slices/cart-slice';
 import profileReducer from './slices/profile-slice'
-import totalPriceReducer from './slices/totalPrice-slice'
 
 // Create a Redux Persist configuration
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'profile', 'cart', 'totalPrice'], // List of reducers to persist
+  whitelist: ['auth', 'profile', 'cart'], // List of reducers to persist
 };
 
 // Combine reducers
@@ -20,7 +19,6 @@ const rootReducer = combineReducers({
   products: productReducer,
   cart: cartReducer,
   profile: profileReducer,
-  totalPrice: totalPriceReducer
 });
 
 // Define the RootState type
