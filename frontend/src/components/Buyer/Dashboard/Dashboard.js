@@ -74,7 +74,6 @@ export default function BuyerDashboard() {
     const handleAddToCart = (product) => {
         // Implement the functionality to add the product to the cart
         dispatch(incrementToCart(product));
-        console.log(`Adding product '${product.title}' to cart.`);
     };
 
     const fetchData = async () => {

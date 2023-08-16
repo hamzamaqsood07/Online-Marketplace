@@ -45,14 +45,25 @@ export default function SignUp() {
     profilePicture: null,
   };
 
-  const onSubmit = async (values, { setSubmitting }) => {
-    console.log(values);
+  const onSubmit = async (values: typeof initialValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
       const url = 'http://localhost:5000/api/users';
-      const response = await axios.post(url, values, {
+      const formData = new FormData();
+      
+      formData.append('firstName', values.firstName);
+      formData.append('lastName', values.lastName);
+      formData.append('email', values.email);
+      formData.append('password', values.password);
+      formData.append('userType', values.userType);
+      if (values.profilePicture) {
+        formData.append('profilePicture', values.profilePicture);
+      }
+      
+      const response = await axios.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data', 
-        }});
+        },
+      });
       console.log('Signup successful', response.data);
       alert("Signup successful");
       navigate('/login');
@@ -61,7 +72,6 @@ export default function SignUp() {
     }
     setSubmitting(false);
   };
-
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -177,7 +187,6 @@ export default function SignUp() {
                   accept="image/*"
                   onChange={(event) => {
                     if(event.currentTarget.files && event.currentTarget.files.length>0){
-                      console.log(event.currentTarget.files[0]);
                       formik.setFieldValue('profilePicture', event.currentTarget.files[0])}
                     }
                   }

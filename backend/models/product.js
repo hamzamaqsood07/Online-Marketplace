@@ -50,7 +50,6 @@ const products = db.define('products', {
 //synchronizing table
 (async () => {
     await db.sync(); 
-    console.log('products table synchronized');
   })();
 
 

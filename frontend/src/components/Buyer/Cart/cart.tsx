@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { removeFromCart, incrementToCart, decrementFromCart, Product } from '../../../redux/slices/cart-slice.ts';
+import { removeFromCart, incrementToCart, decrementFromCart, Product } from '../../../redux/slices/cart-slice';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,10 +11,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { useNavigate } from 'react-router-dom';
+import { setTotalPrice } from '../../../redux/slices/totalPrice-slice';
+import axios from 'axios';
 
 const CartPage: React.FC = () => {
     const cart = useSelector((state: RootState) => state.cart);
-    console.log(cart);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleRemoveFromCart = (productId: number) => {
@@ -36,7 +39,10 @@ const CartPage: React.FC = () => {
     };
 
     const checkout = () => {
-      
+        const totalPrice = calculateTotalPrice();
+        dispatch(setTotalPrice(totalPrice));
+        axios.post("http://localhost:5000/api/payment/create-checkout-session",{totalPrice:totalPrice})
+        // navigate('/payment');
     }
 
     return (

@@ -12,18 +12,18 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 import '../../styles/error.css';
 import { useSelector , useDispatch } from 'react-redux';
-import { setAuthToken } from '../../redux/slices/auth-slice.ts';
-import { RootState } from '../../redux/store.ts';
+import { setAuthToken } from '../../redux/slices/auth-slice';
+import { RootState } from '../../redux/store';
 import { useEffect } from 'react';
 import jwt_decode from 'jwt-decode'; // Import jwt-decode library
 import { useNavigate } from 'react-router-dom';
-import { setProfile } from '../../redux/slices/profile-slice.ts';
+import { setProfile } from '../../redux/slices/profile-slice';
 
 
 
@@ -37,7 +37,10 @@ function SignInSide() {
     password: Yup.string().required('Password is required'),
   });
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (
+    values: { email: string; password: string; rememberMe: boolean },
+    { setSubmitting }: FormikHelpers<{ email: string; password: string; rememberMe: boolean }>
+  ) => {
     try {
       const url = 'http://localhost:5000/api/auth';
       const response = await axios.post(url, {
@@ -45,25 +48,17 @@ function SignInSide() {
         password: values.password,
       });
       const token = response.data.token;
-
-      // Decode the JWT token
+  
       const decodedToken: any = jwt_decode(token);
       dispatch(setAuthToken(response.data.token));
       dispatch(setProfile(decodedToken));
-      console.log("decodedToken:",decodedToken);
-
-      // Access the userType claim
+  
       const userType: string = decodedToken.userType;
-      console.log('Login successful', response.data);
-      // Navigate based on userType
       if (userType === 'buyer') {
-        // Navigate to buyer route
         navigate('/buyer-dashboard');
       } else if (userType === 'seller') {
-        // Navigate to seller route
         navigate('/seller-dashboard');
       }
-
     } catch (error) {
       console.log('Login failed', error);
       alert(console.error);

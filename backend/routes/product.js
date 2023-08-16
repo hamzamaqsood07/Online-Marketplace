@@ -22,7 +22,6 @@ const upload = multer({storage: storage})
 
 //Adding an item
 router.post('/', [auth, seller] , upload.array("pictures"), async (req, res) => {
-    console.log(req.files);
 
     //creating user object
     let product = (req.files && req.files.length>0) ? 

@@ -5,7 +5,8 @@ const config = require("config")
  */
 const sequelize = new Sequelize('Online-Marketplace-DB', 'postgres', config.get('dbPassword'), {
   host: 'localhost',
-  dialect: 'postgres'
+  dialect: 'postgres',
+  logging: false
 });
 module.exports.authenticate = async function () {
   try {

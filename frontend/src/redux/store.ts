@@ -1,16 +1,17 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import authReducer from './slices/auth-slice.ts'; // Update with the correct import path
-import productReducer from './slices/product-slice.ts'; // Update with the correct import path
-import cartReducer from './slices/cart-slice.ts';
-import profileReducer from './slices/profile-slice.ts'
+import authReducer from './slices/auth-slice'; // Update with the correct import path
+import productReducer from './slices/product-slice'; // Update with the correct import path
+import cartReducer from './slices/cart-slice';
+import profileReducer from './slices/profile-slice'
+import totalPriceReducer from './slices/totalPrice-slice'
 
 // Create a Redux Persist configuration
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'profile', 'cart'], // List of reducers to persist
+  whitelist: ['auth', 'profile', 'cart', 'totalPrice'], // List of reducers to persist
 };
 
 // Combine reducers
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   products: productReducer,
   cart: cartReducer,
-  profile: profileReducer
+  profile: profileReducer,
+  totalPrice: totalPriceReducer
 });
 
 // Define the RootState type

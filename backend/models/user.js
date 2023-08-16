@@ -44,7 +44,6 @@ const users = db.define('users', {
 //synchronizing table
 (async () => {
     await db.sync(); 
-    console.log('users table synchronized');
   })();
 
 //generating token
