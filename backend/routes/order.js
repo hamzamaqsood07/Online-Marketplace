@@ -6,7 +6,7 @@ const {Order} = require('../models/order')
 const {Product} = require('../models/product')
 const {OrderProduct} = require('../models/orderProduct')
 
-// routes.js
+
 router.post('/', [auth, buyer], async (req, res) => {
   try {
     const { products } = req.body;
@@ -106,5 +106,41 @@ router.post('/', [auth, buyer], async (req, res) => {
     return res.status(403).send('Access denied.');
   });
   
-
+  router.put('/:id', [auth], async(req,res) => {
+    const userType = req.user.userType;
+    const action = req.body.action;
+    const orderId = req.params.id;
+  
+    try {
+      const order = await Order.findByPk(orderId);
+      
+      if (!order) {
+        return res.status(404).json({ error: 'Order not found' });
+      }
+  
+      if (action === 'ship' && userType === 'seller') {
+        // Perform the ship action for sellers
+        if (order.status === 'pending') {
+          await order.update({ status: 'shipped' });
+          return res.status(200).json({ message: 'Order has been marked as shipped' });
+        } else {
+          return res.status(400).json({ error: 'Order status is not eligible for shipping' });
+        }
+      } else if (action === 'receive' && userType === 'buyer') {
+        // Perform the receive action for buyers
+        if (order.status === 'shipped') {
+          await order.update({ status: 'received' });
+          return res.status(200).json({ message: 'Order has been marked as received' });
+        } else {
+          return res.status(400).json({ error: 'Order status is not eligible for receiving' });
+        }
+      } else {
+        return res.status(403).json({ error: 'Action not allowed' });
+      }
+    } catch (error) {
+      console.error('Error processing order action:', error);
+      return res.status(500).json({ error: 'An error occurred while processing the order action' });
+    }
+  });
+  
   module.exports = router; 

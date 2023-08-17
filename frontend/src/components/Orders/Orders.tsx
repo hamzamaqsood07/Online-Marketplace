@@ -28,20 +28,33 @@ const OrderPage: React.FC = () => {
 
   const handleShipped = async (orderId: number) => {
     try {
-      // Implement the logic to update the order status as "shipped"
-      // You can use axios to send a PUT request to update the order status
-    } catch (error) {
+      await axios.put(`http://localhost:5000/api/orders/${orderId}`, { action: 'ship' },
+      {
+        headers: {
+          'x-auth-token': token,
+        }
+      });
+      console.log("order shipped");
+    } 
+    catch (error) {
       console.error('Error updating order status:', error);
     }
+    fetchOrders();
   };
 
   const handleReceived = async (orderId: number) => {
     try {
-      // Implement the logic to update the order status as "received"
-      // You can use axios to send a PUT request to update the order status
-    } catch (error) {
+      await axios.put(`http://localhost:5000/api/orders/${orderId}`, { action: 'receive' },
+      {
+        headers: {
+          'x-auth-token': token,
+        }
+      });
+    } 
+    catch (error) {
       console.error('Error updating order status:', error);
     }
+    fetchOrders();
   };
 
   const handleFilter = (status: string | null) => {
