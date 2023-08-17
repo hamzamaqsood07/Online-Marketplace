@@ -48,9 +48,9 @@ const Product = db.define('products', {
     }
 });
 //synchronizing table
-(async () => {
-    await db.sync(); 
-  })();
+// (async () => {
+//     await db.sync(); 
+//   })();
 
 
 //validating product

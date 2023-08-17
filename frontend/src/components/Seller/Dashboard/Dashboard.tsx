@@ -7,7 +7,8 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Button from "@mui/material/Button";
 import Modal from '@mui/material/Modal';
@@ -123,9 +124,13 @@ export default function SellerDashboard() {
         }
     };
 
+    const handleMyOrders = () => {
+        navigate('/orders');
+
+    };
+
     return (
         <>
-            <ProfilePage></ProfilePage>
             <div>
                 {/* Add Product Page */}
                 <Modal
@@ -170,9 +175,15 @@ export default function SellerDashboard() {
                         Logout
                     </Button>
                 </Box>
-
-                {/* Add Product Button */}
+                <ProfilePage></ProfilePage>
+                {/* My Orders Button */}
                 <Box sx={{ textAlign: 'center', marginTop: '10px' }}>
+                    <Button variant="contained" endIcon={<LocalShippingIcon />} onClick={handleMyOrders}>
+                        My Orders
+                    </Button>
+                </Box>
+                {/* Add Product Button */}
+                <Box sx={{ textAlign: 'right', marginTop: '10px' }}>
                     <Button variant="contained" endIcon={<AddCircleIcon />} onClick={handleOpen}>
                         Add Product
                     </Button>

@@ -65,8 +65,8 @@ export default function SignUp() {
         },
       });
       console.log('Signup successful', response.data);
-      alert("Signup successful");
       navigate('/login');
+      alert("Signup successful");
     } catch (error) {
       console.log(error);
     }

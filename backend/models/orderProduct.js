@@ -25,9 +25,9 @@ Order.belongsToMany(Product, { through: OrderProduct });
 Product.belongsToMany(Order, { through: OrderProduct });
 
 //synchronizing table
-(async () => {
-    await db.sync();
-  })();
+// (async () => {
+//     await db.sync();
+//   })();
   
 
 

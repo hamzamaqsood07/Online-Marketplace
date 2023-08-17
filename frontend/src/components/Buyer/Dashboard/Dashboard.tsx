@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import ProfilePage from '../../Profile/Profile';
 import { RootState } from '../../../redux/store';
 import axios from 'axios';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
 const baseImageUrl = 'images/products/';
 
@@ -103,11 +104,14 @@ export default function BuyerDashboard() {
         navigate('/login');
     }
 
+    const handleMyOrders = () => {
+        navigate('/orders');
+    };
+
     // ...
 
     return (
         <>
-            <ProfilePage></ProfilePage>
             <div>
                 {/* Cart */}
                 <Modal
@@ -140,9 +144,17 @@ export default function BuyerDashboard() {
                         Logout
                     </Button>
                 </Box>
+                <ProfilePage></ProfilePage>
+
+                {/* My Orders Button */}
+                <Box sx={{ textAlign: 'center', marginTop: '10px' }}>
+                    <Button variant="contained" endIcon={<LocalShippingIcon />} onClick={handleMyOrders}>
+                        My Orders
+                    </Button>
+                </Box>
 
                 {/* Cart Button */}
-                <Box sx={{ textAlign: "center", margin: "10px" }}>
+                <Box sx={{ textAlign: "right", margin: "10px" }}>
                     <Button variant="contained" endIcon={<ShoppingCartIcon />} onClick={handleOpen}>
                         Cart({cartCount})
                     </Button>

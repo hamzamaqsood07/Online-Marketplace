@@ -52,13 +52,8 @@ function SignInSide() {
       const decodedToken: any = jwt_decode(token);
       dispatch(setAuthToken(response.data.token));
       dispatch(setProfile(decodedToken));
-  
-      const userType: string = decodedToken.userType;
-      if (userType === 'buyer') {
-        navigate('/buyer-dashboard');
-      } else if (userType === 'seller') {
-        navigate('/seller-dashboard');
-      }
+
+      navigate('/');
     } catch (error) {
       console.log('Login failed', error);
       alert(console.error);

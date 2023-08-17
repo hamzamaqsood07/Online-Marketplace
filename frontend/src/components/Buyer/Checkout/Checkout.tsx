@@ -16,7 +16,7 @@ const Checkout: React.FC = () => {
 
   const navigateToDashboard = ()=>{
         setTimeout(()=>{
-            navigate('/buyer-dashboard');
+            navigate('/');
         },2000)
     }   
 

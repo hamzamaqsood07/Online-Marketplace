@@ -14,7 +14,7 @@ const Order = db.define('orders', {
         allowNull: false,
     },
     status: {
-      type: Sequelize.ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled'),
+      type: Sequelize.ENUM('pending', 'shipped',  'received'),
       defaultValue: 'pending',
     },
     createdAt: {
@@ -34,13 +34,21 @@ const Order = db.define('orders', {
             model: 'users', // Name of the referenced table
             key: 'id'       // Name of the referenced column
         }
+    },
+    sellerId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users', // Name of the referenced table
+            key: 'id'       // Name of the referenced column
+        }
     }
   });
 
 //synchronizing table
-(async () => {
-    await db.sync(); 
-  })();
+// (async () => {
+//     await db.sync(); 
+//   })();
   
 
 module.exports = {Order};

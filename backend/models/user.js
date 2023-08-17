@@ -42,9 +42,9 @@ const User = db.define('users', {
     }
 });
 //synchronizing table
-(async () => {
-    await db.sync(); 
-  })();
+// (async () => {
+//     await db.sync(); 
+//   })();
 
 //generating token
 const generateAuthToken = function(user){
