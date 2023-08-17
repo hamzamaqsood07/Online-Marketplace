@@ -5,7 +5,7 @@ const app = express();
 const router = express.Router();
 app.use(express.static('public'));
 
-const YOUR_DOMAIN = 'http://localhost:3000/';
+const YOUR_DOMAIN = 'http://localhost:3000/checkout';
 
 router.post('/create-checkout-session', async (req, res) => {
     const products = req.body.products;
@@ -25,8 +25,8 @@ router.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
         line_items: itemsObj,
         mode: 'payment',
-        success_url: `${YOUR_DOMAIN}buyer-dashboard`,
-        cancel_url: `${YOUR_DOMAIN}buyer-dashboard`,
+        success_url: `${YOUR_DOMAIN}?paymentStatus=success`,
+        cancel_url: `${YOUR_DOMAIN}?paymentStatus=canceled`,
     });
 
     res.send({url: session.url});

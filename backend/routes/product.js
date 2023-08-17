@@ -3,7 +3,7 @@ const path = require('path');
 const multer = require('multer');
 const express = require('express');
 const _ = require('lodash');
-const { Product, validateProduct, validateUpdateProduct } = require('../models/product');
+const { Product, validateProduct } = require('../models/product');
 const router = express.Router();
 const auth = require('../middlewares/auth');
 const seller = require('../middlewares/seller');
@@ -107,7 +107,7 @@ router.put('/:productId', [auth, seller], upload.array("pictures"), async (req, 
     const productId = req.params.productId;
     
     // Validate the incoming product attributes
-    const { error } = validateUpdateProduct(req.body);
+    const { error } = validateProduct(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     try {
@@ -156,7 +156,6 @@ router.put('/:productId', [auth, seller], upload.array("pictures"), async (req, 
 });
 
 
-module.exports = router;    
 
 
 
@@ -186,3 +185,5 @@ router.get('/', [auth, buyer], async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+
+module.exports = router;    

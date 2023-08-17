@@ -3,7 +3,8 @@ const cors = require("cors");
 const user = require("../routes/user");
 const auth = require('../routes/auth');
 const product = require('../routes/product');
-const payment = require('../routes/payment')
+const payment = require('../routes/payment');
+const order = require('../routes/order');
 
 /**
  * The method uses server application to
@@ -19,4 +20,5 @@ module.exports = function (app) {
   app.use("/api/auth", auth);
   app.use("/api/products", product);
   app.use("/api/payment", payment);
+  app.use("/api/orders", order);
 };

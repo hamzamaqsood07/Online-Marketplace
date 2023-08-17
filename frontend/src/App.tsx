@@ -8,6 +8,7 @@ import BuyerDashboard from './components/Buyer/Dashboard/Dashboard'
 import jwt_decode from 'jwt-decode';
 import {useSelector } from 'react-redux';
 import { RootState } from './redux/store';
+import Checkout from './components/Buyer/Checkout/Checkout';
 
 
 interface DecodedToken{
@@ -36,6 +37,7 @@ function App() {
         <Route path="/signup" element={<Signup/>} />
         <Route path="/seller-dashboard" element={<InitialRoute/>}/>
         <Route path="/buyer-dashboard" element={<InitialRoute/>}/>
+        <Route path="/checkout" element={<Checkout/>}/>
         
         <Route path="*" element={<NotFound />} /> {/* This should be the last route */}
         {/* You can add more routes here if needed */}

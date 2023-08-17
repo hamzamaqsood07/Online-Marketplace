@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { removeFromCart, incrementToCart, decrementFromCart } from '../../../redux/slices/cart-slice';
+import { removeFromCart, incrementToCart, decrementFromCart, clearCart } from '../../../redux/slices/cart-slice';
 import { Product } from '../../../redux/slices/product-slice';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
@@ -12,12 +12,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CartPage: React.FC = () => {
     const cart = useSelector((state: RootState) => state.cart);
-    const navigate = useNavigate();
+    const productsInStore = useSelector((state:RootState)=>state.products.products);
     const dispatch = useDispatch();
 
     const handleRemoveFromCart = (productId: number) => {
@@ -38,17 +37,47 @@ const CartPage: React.FC = () => {
         }, 0);
     };
 
+    const handleClearCart = () => {
+        dispatch(clearCart()); // Call the clearCart() reducer action
+    };
+
     const checkout = () => {
         console.log(cart.products);
-        axios.post("http://localhost:5000/api/payment/create-checkout-session",
-            {products:cart.products}).
-            then((response) => {
-                console.log("asasasasasasa",response.data.url);
-                if(response.data.url){    
-                    window.location.href=response.data.url;
+        if(cart.products && cart.products.length>0){
+            let stockAvailable = true;
+            for(let i=0; i<cart.products.length; i++){
+                let productInCart = cart.products[i];
+                let productInStore = productsInStore.find(product=>product.id===productInCart.id);
+                if(!productInStore){
+                    alert('fatal error!');
+                    stockAvailable = false;
+                    break
+                }
+                else if(productInCart.quantity>productInStore.quantity){
+                    alert('Check the quantity of items in dashboard')
+                    stockAvailable = false;
+                    break;
                 }
             }
-        );
+            if(stockAvailable)
+            {
+                try{
+                    axios.post("http://localhost:5000/api/payment/create-checkout-session",
+                        {products:cart.products}).
+                        then((response) => {
+                            if(response.data.url){    
+                                window.location.href=response.data.url;
+                                console.log("url: ",response.data.url);
+                            }
+                        }
+                    );
+                }
+                catch(error){
+                    console.log(error);
+                }
+            }
+        }
+        else alert('cart is empty!');
     }
 
     return (
@@ -98,6 +127,9 @@ const CartPage: React.FC = () => {
                 </Typography>
                 <Button variant="contained" color="primary" onClick={checkout}>
                     Checkout
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={handleClearCart}>
+                    Clear Cart
                 </Button>
             </div>
         </div>

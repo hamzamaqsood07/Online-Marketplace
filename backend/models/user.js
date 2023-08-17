@@ -6,7 +6,7 @@ const _ = require('lodash');
 const config = require('config');
 
 //defining schema
-const users = db.define('users', {
+const User = db.define('users', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -69,6 +69,4 @@ const validateUser =function(user){
 }
 
 //export commands
-module.exports.User = users;
-module.exports.validateUser = validateUser;
-module.exports.generateAuthToken = generateAuthToken;
+module.exports = {User, validateUser, generateAuthToken};

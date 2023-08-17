@@ -42,7 +42,6 @@ const columns = [
         minWidth: 100,
         format: (value: number) => value.toLocaleString('en-US'),
     },
-    // { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
 
 export default function BuyerDashboard() {
